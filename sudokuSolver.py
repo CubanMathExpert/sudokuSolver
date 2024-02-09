@@ -36,7 +36,22 @@ unitList = ([cross(rows, c) for c in cols] +
 units = dict((s, [u for u in unitList if s in u]) for s in squares)
 peers = dict((s, set(sum(units[s],[])) - set([s])) for s in squares)
 
+def parse_grid(grid):
+    #convert grid to a dict of possible values {square : digits}
+    values = dict((s, digits) for s in squares)
+    for s,d in grid_values(grid).items():
+        if d in digits and not assign(values, s, d):
+            return False
+    return values
 
+def grid_values(grid):
+    #convert grid into a dict of {square: char} with '0' or '.' for empties
+    chars = [c for c in grid if c in digits or c in '0.']
+    assert len(chars) == 81
+    return dict(zip(squares, chars))
+
+#def assign(values, s, d):
+    #
 
 def main():
     #print(squares)
