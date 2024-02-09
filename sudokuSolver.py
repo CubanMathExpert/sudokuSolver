@@ -3,6 +3,7 @@ from aima3.search import *
 #columns 1-9, rows A-I, unit is (row,col,box)
 #peers of a square are all squares in
 #its unit
+#every square has 3 unis and 20 peers
 
 def cross(A, B):
     #Cross product of elements in A and elements in B
@@ -50,14 +51,53 @@ def grid_values(grid):
     assert len(chars) == 81
     return dict(zip(squares, chars))
 
-#def assign(values, s, d):
-    #
+def assign(values, s, d):
+    #eliminate all the other values (except d) from values[s] 
+    #and propagate return values, except return false if 
+    #a contradiction is detected
+    other_values = values[s].replace(d, '')
+    if all(eliminate(values, s, d2) for d2 in other_values):
+        return values
+    else:
+        return False
+    
+def eliminate(values, s, d):
+    #eliminate d from values[s]; propagate when values or
+    #places <= 2. Return values, except return False
+    if d not in values[s]:
+        return values # already eliminated
+    values[s] = values[s].replace(d, '')
+    #if a square is reduced to 1 value d2, then eliminate d2 from peers
+    if len(values[s]) == 0:
+        return False
+    elif len(values[s]) == 1:
+        d2 = values[s]
+        if not all(eliminate(values, s2, d2) for s2 in peers[s]):
+            return False
+    #if a unit u is reduced to only one place for a value d, then put it there
+    for u in units[s]:
+        dplaces = [s for s in u if d in values[s]]
+        if len(dplaces) == 0:
+            return False
+        elif len(dplaces) == 1:
+            if not assign(values, dplaces[0], d):
+                return False
+    return values
+
+#display a puzzle
+def display(values):
+    #display values as a 2-D grid.
+    width = 1 + max(len(values[s]) for s in squares)
+    line = '+'.join(['-' * (width * 3)] * 3)
+    for r in rows:
+        print(''.join(values[r+c].center(width)+('|' if c in '36' else '') for c in cols))
+        if r in 'CF': 
+            print(line)
 
 def main():
-    #print(squares)
-    #print(units)
-    #print(peers)
     test()
+    grid1 = '003020600900305001001806400008102900700000008006708200002609500800203009005010300'
+    display(parse_grid(grid1))
 
 
 if __name__ == '__main__':
