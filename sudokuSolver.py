@@ -47,7 +47,7 @@ def parse_grid(grid):
 def grid_values(grid):
     "Convert grid into a dict of {square: char} with '0' or '.' for empties."
     chars = [c for c in grid if c in digits or c in '0.']
-    assert len(chars) == 81
+    #assert len(chars) == 81
     return dict(zip(squares, chars))
 
     ################ Constraint Propagation ################
@@ -108,8 +108,9 @@ def search(values):
         return values ## Solved!
     ## Chose the unfilled square s with the fewest possibilities
     #n,s = min((len(values[s]), s) for s in squares if len(values[s]) > 1)
-    return some(search(assign(values.copy(), s, d))
-                for d in values[s])
+    s = random.choice(squares)
+    #return some(search(assign(values.copy(), s, d)) for d in values[s])
+    return some(search(assign(values.copy(), s, random.choice(values[s]))) for d in values[s])
 
     ################ Utilities ################
 
@@ -118,6 +119,10 @@ def some(seq):
     for e in seq:
         if e: return e
     return False
+
+def from_file(filename, sep='\n'):
+    with open(filename, 'r') as file:
+        return file.read().strip().split(sep)
 
 def shuffled(seq):
     "Return a randomly shuffled copy of the input sequence."
@@ -166,13 +171,10 @@ def random_puzzle(N=17):
         if len(ds) >= N and len(set(ds)) >= 8:
             return ''.join(values[s] if len(values[s])==1 else '.' for s in squares)
     return random_puzzle(N) ## Give up and make a new puzzle
-
-grid1  = '003020600900305001001806400008102900700000008006708200002609500800203009005010300'
-grid2  = '4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......'
-hard1  = '.....6....59.....82....8....45........3........6..3.54...325..6..................'
         
 def main():
-    solve_all([random_puzzle() for _ in range(2000)], "random", 100.0)
+    solve_all(from_file('100sudoku.txt'), '100sudokus', None)
+    solve_all(from_file('hard.txt'), 'hard', None)
 
 if __name__ == '__main__':
     main()
