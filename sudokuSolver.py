@@ -1,5 +1,3 @@
-from aima3.search import *
-
 def cross(A, B):
     "Cross product of elements in A and elements in B."
     return [a+b for a in A for b in B]
@@ -108,33 +106,24 @@ def search(values):
         return values ## Solved!
     ## Chose the unfilled square s with the fewest possibilities
     n,s = min((len(values[s]), s) for s in squares if len(values[s]) > 1)
-
-    #naked pairs
-    if len(values[s]) == 2: # If the square has 2 possible values only
-        # Check in unit if one of the groups has the two same possible values for one of the peers
-        for u in units[s]:
-            # find the pair
-            for p in u:
-                # If you find a pair then remove the values from all the others
-                if values[s] == values[p] and s != p:
-                    s2 = p
-                    #remove the values from others
-                    for peer in u:
-                        if peer != s and peer != s2:
-                            eliminate(values, peer, values[s])
-                        else:
-                            continue
-                    
-            
-
-
+    h_naked_pairs(s, values)
     return some(search(assign(values.copy(), s, d)) for d in values[s])
     #random square and digits-------------
     #s = random.choice(squares)
     #return some(search(assign(values.copy(), s, random.choice(values[s]))) for d in values[s])
 
-def h_naked_pairs(values):
-    print(display(values))
+def h_naked_pairs(s, values):
+        #naked pairs
+    if len(values[s]) == 2:
+        pair = [s]
+        for unit in units[s]:    
+                for peer in unit:
+                    if values[s] == values[peer] and s != peer:
+                        pair.append(peer)
+                        if len(pair) > 2:
+                            pair = pair[0:2]
+                        break
+                break
 
     ################ Utilities ################
 
@@ -198,7 +187,7 @@ def random_puzzle(N=17):
         
 def main():
     #solve_all(from_file('100sudoku.txt'), '100sudokus', None)
-    solve_all(from_file('hard.txt'), 'hard', None)
+    #solve_all(from_file('hard.txt'), 'hard', None)
     solve_all(from_file('top95.txt'), 'top95', None)
 
 
