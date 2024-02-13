@@ -14,7 +14,7 @@ units = dict((s, [u for u in unitlist if s in u])
 peers = dict((s, set(sum(units[s],[]))-set([s]))
             for s in squares)
 
-    ################ Unit Tests ################
+################ Unit Tests ################
 
 def test():
     "A set of tests that must pass."
@@ -30,7 +30,7 @@ def test():
                                    'A1', 'A3', 'B1', 'B3'])
     print('All tests pass.')
 
-    ################ Parse a Grid ################
+################ Parse a Grid ################
 
 def parse_grid(grid):
     """Convert grid to a dict of possible values, {square: digits}, or
@@ -48,7 +48,7 @@ def grid_values(grid):
     #assert len(chars) == 81
     return dict(zip(squares, chars))
 
-    ################ Constraint Propagation ################
+################ Constraint Propagation ################
 
 def assign(values, s, d):
     """Eliminate all the other values (except d) from values[s] and propagate.
@@ -83,7 +83,7 @@ def eliminate(values, s, d):
                  return False
     return values
 
-    ################ Display as 2-D grid ################
+################ Display as 2-D grid ################
 
 def display(values):
     "Display these values as a 2-D grid."
@@ -94,9 +94,11 @@ def display(values):
                       for c in cols)
         if r in 'CF': print(line)
 
-    ################ Search ################
+################ Search ################
 
-def solve(grid): return search(parse_grid(grid))
+def solve(grid): 
+    #return hill_climbing_search(parse_grid(grid))
+    return search(parse_grid(grid))
 
 def search(values):
     "Using depth-first search and propagation, try all possible values."
@@ -112,6 +114,8 @@ def search(values):
     #s = random.choice(squares)
     #return some(search(assign(values.copy(), s, random.choice(values[s]))) for d in values[s])
 
+################ heuristics ################
+
 def h_naked_pairs(s, values):
         #naked pairs
     if len(values[s]) == 2:
@@ -125,7 +129,26 @@ def h_naked_pairs(s, values):
                         break
                 break
 
-    ################ Utilities ################
+################ hill climbing search ################
+
+def fitness_test(values):
+    return 0
+
+def hill_climbing_search(values):
+    if values is False: #Failure to find a solution
+        return False
+    if all(len(values[s]) == 1 for s in squares): #Sudoku has been solved
+        return values
+    
+    #hill climbing algo
+    maxIter = 500
+
+    # random numbers from possible values
+    currentSolution = values.copy()
+    currentScore = fitness_test(currentSolution)
+
+
+################ Utilities ################
 
 def some(seq):
     "Return some element of seq that is true."
@@ -143,7 +166,7 @@ def shuffled(seq):
     random.shuffle(seq)
     return seq
 
-    ################ System test ################
+################ System test ################
 
 import time, random
 
