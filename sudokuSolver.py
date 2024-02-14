@@ -1,3 +1,5 @@
+from aima3.search import *
+
 def cross(A, B):
     "Cross product of elements in A and elements in B."
     return [a+b for a in A for b in B]
@@ -108,7 +110,6 @@ def search(values):
         return values ## Solved!
     ## Chose the unfilled square s with the fewest possibilities
     n,s = min((len(values[s]), s) for s in squares if len(values[s]) > 1)
-    h_naked_pairs(s, values)
     return some(search(assign(values.copy(), s, d)) for d in values[s])
     #random square and digits-------------
     #s = random.choice(squares)
@@ -116,37 +117,44 @@ def search(values):
 
 ################ heuristics ################
 
-def h_naked_pairs(s, values):
-        #naked pairs
-    if len(values[s]) == 2:
-        pair = [s]
-        for unit in units[s]:    
-                for peer in unit:
-                    if values[s] == values[peer] and s != peer:
-                        pair.append(peer)
-                        if len(pair) > 2:
-                            pair = pair[0:2]
-                        break
-                break
+
+        
 
 ################ hill climbing search ################
 
-def fitness_test(values):
-    return 0
-
-def hill_climbing_search(values):
-    if values is False: #Failure to find a solution
-        return False
-    if all(len(values[s]) == 1 for s in squares): #Sudoku has been solved
-        return values
+#fill the 3x3 squares with random numbers to start
+def random_fill_generator(values):
+    allSquareGroups = unitlist[18:27]
+    allSquareGroupsValues = []
+    for g in allSquareGroups:
+        groupValues = []
+        l = [str(i) for i in range(1,10)]
+        #first put all initial values
+        for s in g:
+            if len(values[s]) == 1:
+                groupValues.append(values[s])
+                l.remove(values[s])
+            elif len(values[s]) != 1:
+                groupValues.append('')
+        # now fill the values that havn't been assigned
+        for i in range(0,9):
+            if groupValues[i] == '':
+                groupValues[i] = random.choice(l)
+                l.remove(groupValues[i])
+        allSquareGroupsValues.append(groupValues)
+    return allSquareGroupsValues
+        
+def random_fill_assign(values):
+    valuesToAssign = random_fill_generator(values)
+    print(valuesToAssign)
     
-    #hill climbing algo
-    maxIter = 500
+                    
 
-    # random numbers from possible values
-    currentSolution = values.copy()
-    currentScore = fitness_test(currentSolution)
 
+
+            
+            
+    #print(allSquareGroupsValues)
 
 ################ Utilities ################
 
@@ -209,9 +217,13 @@ def random_puzzle(N=17):
     return random_puzzle(N) ## Give up and make a new puzzle
         
 def main():
+
+    grid1 = '48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....'
     #solve_all(from_file('100sudoku.txt'), '100sudokus', None)
     #solve_all(from_file('hard.txt'), 'hard', None)
-    solve_all(from_file('top95.txt'), 'top95', None)
+    random_fill_assign(parse_grid(grid1))
+    #solve_all(from_file('top95.txt'), 'top95', None)
+    #solve_all([random_puzzle() for _ in range(16000)], 'Rando', 201)
 
 
 if __name__ == '__main__':
