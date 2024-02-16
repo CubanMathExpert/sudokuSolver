@@ -225,10 +225,11 @@ def random_puzzle(N=17):
 def main():
 
     grid1 = '48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....'
-    sudokuProblem = Sudoku(parse_grid(grid1))
-    sudokuProblem.initial = random_fill_generator(parse_grid(grid1))
-    #parse into boxes 
     initial_empty = parse_grid_list(grid1)
+    initial_fill = random_fill_generator(parse_grid(grid1))
+    sudokuProblem = Sudoku(initial_fill,initial_empty)
+    #parse into boxes 
+
     
 
     #print(squares)
