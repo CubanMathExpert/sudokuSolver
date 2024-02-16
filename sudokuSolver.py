@@ -1,4 +1,5 @@
 from aima3.search import *
+from Sudoku import Sudoku
 
 def cross(A, B):
     "Cross product of elements in A and elements in B."
@@ -109,11 +110,12 @@ def search(values):
     if all(len(values[s]) == 1 for s in squares):
         return values ## Solved!
     ## Chose the unfilled square s with the fewest possibilities
-    n,s = min((len(values[s]), s) for s in squares if len(values[s]) > 1)
-    return some(search(assign(values.copy(), s, d)) for d in values[s])
+    #n,s = min((len(values[s]), s) for s in squares if len(values[s]) > 1)
+    #return some(search(assign(values.copy(), s, d)) for d in values[s])
+    
     #random square and digits-------------
-    #s = random.choice(squares)
-    #return some(search(assign(values.copy(), s, random.choice(values[s]))) for d in values[s])
+    s = random.choice(squares)
+    return some(search(assign(values.copy(), s, random.choice(values[s]))) for d in values[s])
 
 ################ heuristics ################
 
@@ -143,18 +145,6 @@ def random_fill_generator(values):
                 l.remove(groupValues[i])
         allSquareGroupsValues.append(groupValues)
     return allSquareGroupsValues
-        
-def random_fill_assign(values):
-    valuesToAssign = random_fill_generator(values)
-    print(valuesToAssign)
-    
-                    
-
-
-
-            
-            
-    #print(allSquareGroupsValues)
 
 ################ Utilities ################
 
@@ -215,14 +205,24 @@ def random_puzzle(N=17):
         if len(ds) >= N and len(set(ds)) >= 8:
             return ''.join(values[s] if len(values[s])==1 else '.' for s in squares)
     return random_puzzle(N) ## Give up and make a new puzzle
-        
+
+def swap(box, p1, p2):
+            #p1,p2 are indices of boxes
+            while p1 == p2:
+                p2 = random.randint(0,8)
+            temp = box[p1]
+            box[p1] = box[p2]
+            box[p2] = temp 
+
 def main():
 
     grid1 = '48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....'
+    sudokuProblem = Sudoku(1)
+    sudokuProblem.initial = random_fill_generator(parse_grid(grid1))
+
     #solve_all(from_file('100sudoku.txt'), '100sudokus', None)
     #solve_all(from_file('hard.txt'), 'hard', None)
-    random_fill_assign(parse_grid(grid1))
-    #solve_all(from_file('top95.txt'), 'top95', None)
+    solve_all(from_file('top95.txt'), 'top95', None)
     #solve_all([random_puzzle() for _ in range(16000)], 'Rando', 201)
 
 
