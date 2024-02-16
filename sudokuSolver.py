@@ -45,6 +45,22 @@ def parse_grid(grid):
             return False ## (Fail if we can't assign d to square s.)
     return values
 
+def parse_grid_list(grid):
+    reorganizedGrid = [grid[0:3]+grid[9:12]+grid[18:21],
+                       grid[3:6]+grid[12:15]+grid[21:24],
+                       grid[6:9]+grid[15:18]+grid[24:27],
+                       grid[27:30]+grid[36:39]+grid[45:48],
+                       grid[30:33]+grid[39:42]+grid[48:51],
+                       grid[33:36]+grid[42:45]+grid[51:54],
+                       grid[54:57]+grid[63:66]+grid[72:75],
+                       grid[57:60]+grid[66:69]+grid[75:78],
+                       grid[60:63]+grid[69:72]+grid[78:81]]
+    return reorganizedGrid
+
+
+
+
+
 def grid_values(grid):
     "Convert grid into a dict of {square: char} with '0' or '.' for empties."
     chars = [c for c in grid if c in digits or c in '0.']
@@ -206,23 +222,21 @@ def random_puzzle(N=17):
             return ''.join(values[s] if len(values[s])==1 else '.' for s in squares)
     return random_puzzle(N) ## Give up and make a new puzzle
 
-def swap(box, p1, p2):
-            #p1,p2 are indices of boxes
-            while p1 == p2:
-                p2 = random.randint(0,8)
-            temp = box[p1]
-            box[p1] = box[p2]
-            box[p2] = temp 
-
 def main():
 
     grid1 = '48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....'
-    sudokuProblem = Sudoku(1)
+    sudokuProblem = Sudoku(parse_grid(grid1), 1)
     sudokuProblem.initial = random_fill_generator(parse_grid(grid1))
+    #parse into boxes 
+    initial_empty = parse_grid_list(grid1)
+    action = sudokuProblem.actions(sudokuProblem.initial, initial_empty)
+    sudokuProblem.result(sudokuProblem.initial, action, initial_empty)
+    #print(squares)
+    
 
     #solve_all(from_file('100sudoku.txt'), '100sudokus', None)
     #solve_all(from_file('hard.txt'), 'hard', None)
-    solve_all(from_file('top95.txt'), 'top95', None)
+    #solve_all(from_file('top95.txt'), 'top95', None)
     #solve_all([random_puzzle() for _ in range(16000)], 'Rando', 201)
 
 
