@@ -57,10 +57,6 @@ def parse_grid_list(grid):
                        grid[60:63]+grid[69:72]+grid[78:81]]
     return reorganizedGrid
 
-
-
-
-
 def grid_values(grid):
     "Convert grid into a dict of {square: char} with '0' or '.' for empties."
     chars = [c for c in grid if c in digits or c in '0.']
@@ -226,8 +222,13 @@ def main():
 
     grid1 = '48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....'
     initial_empty = parse_grid_list(grid1)
-    initial_fill = random_fill_generator(parse_grid(grid1))
-    sudokuProblem = Sudoku(initial_fill,initial_empty)
+    max_iteration = 1000
+    valeurs_etats_finales = []
+    solutions = []
+    sudokuProblem = Sudoku(initial_empty)
+    sudokuProblem.initial = random_fill_generator(parse_grid(grid1))
+    print(sudokuProblem.actions(sudokuProblem.initial))
+    #etat_final = hill_climbing(sudokuProblem)
     #parse into boxes 
 
     
