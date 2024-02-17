@@ -112,7 +112,6 @@ def display(values):
 ################ Search ################
 
 def solve(grid): 
-    #return hill_climbing_search(parse_grid(grid))
     return search(parse_grid(grid))
 
 def search(values):
