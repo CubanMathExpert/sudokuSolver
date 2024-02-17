@@ -241,15 +241,15 @@ def main():
             solutions.append(etat_final)"""
     
     # ANNEALING
-    """sudokuProblem = Sudoku(initial_empty)
+    sudokuProblem = Sudoku(initial_empty)
     sudokuProblem.initial = random_fill_generator(parse_grid(grid1))
-    etat_final = simulated_annealing(sudokuProblem, exp_schedule(15, 0.99, 1000))
+    etat_final = simulated_annealing(sudokuProblem, exp_schedule(10, 0.99, 1000))
 
     valeur = sudokuProblem.value(etat_final)
     valeurs_etats_finales.append(valeur)
         
     if valeur == 0:
-        solutions.append(etat_final)"""
+        solutions.append(etat_final)
 
 
 
