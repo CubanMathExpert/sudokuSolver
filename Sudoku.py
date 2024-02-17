@@ -60,24 +60,27 @@ class Sudoku(Problem):
             current_state[6][6:9] + current_state[7][6:9] + current_state[8][6:9]
         ]
 
+        
+        all_col_container = [] #contains all the columns
+        for col in range(0,9):
+            column = []
+            for row in all_row_container:
+                column.append(row[col])
+            all_col_container.append(column)
+            column = []
+
         def check_conflicts(container):
             result = 0
-            rows = [set() for _ in range(9)]
-            columns = [set() for _ in range(9)]
-            #check for conflicts in rows and clumns
-            for i in range(9):
-                for j in range(9):
-                    num = container[i][j]
-                    if num in rows[i] or num in columns[j]:
+            for row in container:
+                s = set()
+                for num in row:
+                    if num in s:
                         result += 1
-                    else:
-                        rows[i].add(num)
-                        columns[j].add(num)
+                    else: s.add(num)
             return result
         #check for conflicts in rows and columns
-
+        result += check_conflicts(all_col_container)
         result += check_conflicts(all_row_container)
-        #print(result)
         return -result
 
 
