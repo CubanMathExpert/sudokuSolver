@@ -222,14 +222,25 @@ def main():
 
     grid1 = '48.3............71.2.......7.5....6....2..8.............1.76...3.....4......5....'
     initial_empty = parse_grid_list(grid1)
-    max_iteration = 1000
+
+    max_iteration = 50
     valeurs_etats_finales = []
     solutions = []
-    sudokuProblem = Sudoku(initial_empty)
-    sudokuProblem.initial = random_fill_generator(parse_grid(grid1))
-    print(sudokuProblem.actions(sudokuProblem.initial))
-    #etat_final = hill_climbing(sudokuProblem)
-    #parse into boxes 
+    
+    for i in range(0,max_iteration):
+        sudokuProblem = Sudoku(initial_empty)
+        sudokuProblem.initial = random_fill_generator(parse_grid(grid1))
+        etat_final = hill_climbing(sudokuProblem)
+
+        valeur = sudokuProblem.value(etat_final)
+        valeurs_etats_finales.append(valeur)
+        
+        if valeur == 0:
+            solutions.append(etat_final)
+
+    print(f"Apres {max_iteration} essaies, nous avons trouve {len(solutions)} solutions, et le max des valeurs"
+          f"obtenues a ete {max(valeurs_etats_finales)}.")
+    #parse into boxes
 
     
 

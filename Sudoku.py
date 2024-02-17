@@ -1,5 +1,4 @@
 from aima3.search import *
-import random
 import copy
 
 class Sudoku(Problem):
@@ -38,7 +37,12 @@ class Sudoku(Problem):
         return new_state
     
     def goal_test(self, state):
-        return 0
+        if any(0 in row for row in state):
+            return False
+        for i in range(0,9):
+            if len(set(state[i])) != 9 or len(set(state[i][j] for j in range(0,0))) != 9:
+                return False
+        return True
 
     def value(self, state):
         #check all the conflicts in the grid for current state
@@ -56,34 +60,25 @@ class Sudoku(Problem):
             current_state[6][6:9] + current_state[7][6:9] + current_state[8][6:9]
         ]
 
-        all_col_container = [] #contains all the columns
-        for col in range(0,9):
-            column = []
-            for row in all_row_container:
-                print()
-                column.append(row[col])
-            all_col_container.append(column)
-            column = []
-        
         def check_conflicts(container):
             result = 0
-            for l in range(0,9):
-                for i in range(0,9):
-                    for j in range(0,9):
-                        if i >= j:
-                            continue
-                        else:
-                            if container[l][i] == container[l][j]:
-                                result += 1
-                            else: continue
+            rows = [set() for _ in range(9)]
+            columns = [set() for _ in range(9)]
+            #check for conflicts in rows and clumns
+            for i in range(9):
+                for j in range(9):
+                    num = container[i][j]
+                    if num in rows[i] or num in columns[j]:
+                        result += 1
+                    else:
+                        rows[i].add(num)
+                        columns[j].add(num)
             return result
         #check for conflicts in rows and columns
-        result += check_conflicts(all_col_container)
+
         result += check_conflicts(all_row_container)
-        #print(result) 
-        return -result         
-
-
+        #print(result)
+        return -result
 
 
 
